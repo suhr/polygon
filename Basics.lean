@@ -14,6 +14,8 @@ def f1 (α β: Type)(x:α)(_:β): α := x
 #reduce f1 Nat Nat 3 5
 #print f1
 
+-- Неявные аргументы
+
 #check f1 _ _ 3 5
 
 def f2 {α β: Type}(x:α)(_:β): α := x
@@ -24,18 +26,26 @@ def f2 {α β: Type}(x:α)(_:β): α := x
 
 #check λP => ¬P
 
+-- Вселенные
+
 example {α β: Sort u}(x:α)(_:β): α := x
 example (x:α)(_:β): α := x
+
+-- Определения ∧, ∨ и ⊥
 
 #print And
 #print Or
 #print False
+
+-- And это структура
 
 example (p:P)(q:Q): P ∧ Q :=
   And.intro p q
 
 example (p:P)(q:Q): P ∧ Q :=
   { left := p, right := q }
+
+-- Сопоставление с образцом
 
 example (pq: P ∧ Q): P :=
   let (And.intro p _) := pq
@@ -45,7 +55,24 @@ example (pq: P ∧ Q): P :=
   let { left := p, right := _ } := pq
   p
 
--- Рекурсоры связок
+-- Угловые скобки
+
+example (p:P)(q:Q): P ∧ Q :=
+  ⟨p,q⟩
+
+example (pq: P ∧ Q): P :=
+  let ⟨p,_⟩ := pq
+  p
+
+-- Проекция
+
+example (pq: P ∧ Q): P :=
+  And.left pq
+
+example (pq: P ∧ Q): P :=
+  pq.left
+
+-- Рекурсоры
 
 #print And.rec
 #print Or.rec
@@ -166,6 +193,7 @@ example {α: Type}{P: α → Prop}(na: ¬∀x, P x): ∃x, ¬P x :=
   sorry
 
 end classical
+
 
 -- Равенство
 
