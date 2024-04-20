@@ -41,9 +41,17 @@ example (pq: P ∧ Q): P :=
   let (And.intro p _) := pq
   p
 
+example (pq: P ∧ Q): P :=
+  let { left := p, right := _ } := pq
+  p
+
+-- Рекурсоры связок
+
 #print And.rec
 #print Or.rec
 #print False.rec
+
+-- То, что мы используем
 
 #check And.intro
 #check And.left
@@ -53,23 +61,28 @@ example (pq: P ∧ Q): P :=
 #check Or.elim
 #check False.elim
 
+-- Примеры доказательств
+
 example {P Q: Prop}(pq: P ∨ Q)(np: ¬P): Q :=
   pq.elim (λp => False.elim (np p)) (λq => q)
 
-example {P Q: Prop}(pq: P ∨ Q)(np: ¬P): Q :=
-  pq.elim (λp => (np p).elim) (λq => q)
-
 example {P Q R: Prop}(pqr: P ∧ (Q ∨ R)): (P ∧ Q) ∨ (P ∧ R) :=
-  let (And.intro p qr) := pqr
-  qr.elim
-    (λq => Or.inl (And.intro p q))
-    (λr => Or.inr (And.intro p r))
+  let ⟨p,qr⟩ := pqr
+  qr.elim (λq => Or.inl ⟨p,q⟩) (λr => Or.inr ⟨p,r⟩)
 
-example {P Q: Prop}(pq: P → Q)(nq: ¬Q): ¬P :=
-  λp => nq (pq p : Q)
+example {P Q: α → Prop}(apq: ∀x, P x ∧ Q x): (∀x, P x) ∧ (∀x, Q x) :=
+  ⟨λx => (apq x).left, λx => (apq x).right⟩
+
+example {P: α → β → Prop}(eap: ∃x, ∀y, P x y): ∀y, ∃x, P x y :=
+  let ⟨x,ap⟩ := eap
+  λy => ⟨x, ap y⟩
+
+-- Упражнения без кванторов
 
 -- Простые упражнения
 
+example {P Q: Prop}(pq: P → Q)(nq: ¬Q): ¬P :=
+  sorry
 example {P Q: Prop}(pq: P ∧ Q): Q ∧ P :=
   sorry
 example {P Q R: Prop}(pQr: P ∧ (Q ∧ R)): (P ∧ Q) ∧ R :=
@@ -100,22 +113,7 @@ example {P Q R: Prop}(pqPr : (P ∧ Q) ∨ (P ∧ R)): P ∧ (Q ∨ R) :=
 example {P Q R: Prop}(pQr: P ∨ (Q ∧ R)): (P ∨ Q) ∧ (P ∨ R) :=
   sorry
 
--- Кванторы
-
-#print Exists
-
-example {P Q: α → Prop}(apq: ∀x, P x ∧ Q x): (∀x, P x) ∧ (∀x, Q x) :=
-  And.intro (λx => (apq x).left) (λx => (apq x).right)
-
-example {P Q: α → Prop}(apq: ∀x, P x ∧ Q x): (∀x, P x) ∧ (∀x, Q x) :=
-  ⟨λx => (apq x).left, λx => (apq x).right⟩
-
-example {P: α → β → Prop}(eap: ∃x, ∀y, P x y): ∀y, ∃x, P x y :=
-  let ⟨x,ap⟩ := eap
-  λy => ⟨x, (ap y : P x y)⟩
-
-#check Exists.intro
-#check Exists.elim
+-- Упражнения с кванторами
 
 -- Простые
 
@@ -137,12 +135,84 @@ example {P Q: α → Prop}(aa: (∀x, P x) ∨ (∀x, Q x)): ∀x, P x ∨ Q x :
 example {P Q: α → Prop}(ee: (∃x, P x) ∨ (∃x, Q x)): ∃x, P x ∨ Q x :=
   sorry
 
--- TODO: классическая логика
+-- Классическая логика
 section classical
 open Classical
 
 #check em
 #check byContradiction
 
+-- Пример
+example {P: Prop}(nnp: ¬¬P): P :=
+  (em P).elim (λp => p) (λnp => (nnp np).elim)
+
+-- Простые упражнения
+
+example {P Q: Prop}(pq: P → Q): ¬P ∨ Q :=
+  sorry
+
+example {P Q: Prop}(npq : ¬(P ∧ Q)): ¬P ∨ ¬Q :=
+  sorry
+
+example {P Q: Prop}(np_q: ¬P → Q): ¬Q → P :=
+  sorry
+
+example {P Q: Prop}(pq_p: (P → Q) → P): P :=
+  sorry
+
+-- Упражнение посложнее
+-- (кроме em можно использовать ещё и byContradiction)
+example {α: Type}{P: α → Prop}(na: ¬∀x, P x): ∃x, ¬P x :=
+  sorry
+
 end classical
- 
+
+-- Равенство
+
+#check Eq.refl
+#check Eq.subst
+#check Eq.ndrec
+
+example {x y: α}(e: x = y): y = x :=
+  Eq.ndrec (motive := λv => v = x) (rfl: x = x) e
+
+-- Eq.symm
+example {x y: α}(e: x = y): y = x :=
+  e ▸ (rfl: x = x)
+
+-- Eq.trans
+example {x y z: α}(xy: x = y)(yz: y = z): x = z :=
+  yz ▸ (xy: x = y)
+
+-- Eq.congrArg
+example {x y: α}{f: α → β}(e: x = y): f x = f y :=
+  e ▸ (rfl: f x = f x)
+
+-- Неравенство, на примере Bool
+
+#print Bool
+#print Bool.rec
+#print Bool.casesOn
+
+#print Bool.noConfusionType
+
+#reduce Bool.noConfusionType False false false  -- False → False
+#reduce Bool.noConfusionType False false true   -- False
+#reduce Bool.noConfusionType False true false   -- False
+#reduce Bool.noConfusionType False true true    -- False → False
+
+def bool_d {P: Sort u}(b: Bool): Bool.noConfusionType P b b :=
+  b.casesOn (λp => p) (λp => p)
+
+example (h: false = true): False :=
+  Eq.subst h (bool_d false)
+
+#check Bool.noConfusion
+
+example (h: false = true): False :=
+  Bool.noConfusion h
+
+-- Неразличимость доказательств
+
+example (P Q: Prop)(p: P)(q: Q): Or.inl p = Or.inr q :=
+  rfl
