@@ -2,11 +2,13 @@
 
 -- Указание Lean писать типы рекурсоров полностью
 set_option pp.proofs true
+-- И не возражать против неиспользуемых переменных
+set_option linter.unusedVariables false
 
-example: ∀α β: Type, α → β → α :=
-  λ(α β: Type)(x:α)(_:β) => x
+example: ∀α β: Type, (x:α) → (y:β) → α :=
+  λ(α β: Type)(x:α)(y:β) => x
 
-example (α β: Type)(x:α)(_:β): α := x
+example (α β: Type)(x:α)(y:β): α := x
 
 def f1 (α β: Type)(x:α)(_:β): α := x
 
