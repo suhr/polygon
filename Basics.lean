@@ -33,52 +33,33 @@ def f2 {α β: Type}(x:α)(_:β): α := x
 example {α β: Sort u}(x:α)(_:β): α := x
 example (x:α)(_:β): α := x
 
--- Определения ∧, ∨ и ⊥
+-- Структуры
 
-#print And
-#print Or
-#print False
+#print Prod
 
--- And это структура
+#check Prod.mk 3 5
 
-example (p:P)(q:Q): P ∧ Q :=
-  And.intro p q
+#reduce Prod.fst (Prod.mk 3 5)
+#reduce Prod.snd (Prod.mk 3 5)
 
-example (p:P)(q:Q): P ∧ Q :=
-  { left := p, right := q }
+#reduce (Prod.mk 3 5).fst
+
+#check ({fst := 3, snd := 5} : Nat × Nat)
+#check (⟨3, 5⟩ : Nat × Nat)
 
 -- Сопоставление с образцом
 
-example (pq: P ∧ Q): P :=
-  let (And.intro p _) := pq
-  p
+#reduce
+  let (Prod.mk f s) := Prod.mk 3 5
+  f
 
-example (pq: P ∧ Q): P :=
-  let { left := p, right := _ } := pq
-  p
+#reduce
+  let {fst := f, snd := _} := Prod.mk 3 5
+  f
 
--- Угловые скобки
-
-example (p:P)(q:Q): P ∧ Q :=
-  ⟨p,q⟩
-
-example (pq: P ∧ Q): P :=
-  let ⟨p,_⟩ := pq
-  p
-
--- Проекция
-
-example (pq: P ∧ Q): P :=
-  And.left pq
-
-example (pq: P ∧ Q): P :=
-  pq.left
-
--- Рекурсоры
-
-#print And.rec
-#print Or.rec
-#print False.rec
+#reduce
+  let ⟨f,_⟩ := Prod.mk 3 5
+  f
 
 -- То, что мы используем
 
@@ -150,8 +131,6 @@ example {P: α → β → Prop}(ap: ∀x, ∀y, P x y): ∀y, ∀x, P x y :=
   sorry
 example {P: α → β → Prop}(ep: ∃x, ∃y, P x y): ∃y, ∃x, P x y :=
   sorry
-example {P: α → Prop}(ne: ¬∃x, P x): ∀x, ¬(P x) :=
-  sorry
 example {P: α → Prop}{Q: Prop}(epQ: (∃x, P x) → Q): ∀x, P x → Q :=
   sorry
 example {P: α → Prop}{Q: Prop}(apq: ∀x, P x → Q): (∃x, P x) → Q :=
@@ -165,6 +144,7 @@ example {P Q: α → Prop}(ee: (∃x, P x) ∨ (∃x, Q x)): ∃x, P x ∨ Q x :
   sorry
 
 -- Классическая логика
+
 section classical
 open Classical
 
@@ -203,20 +183,20 @@ end classical
 #check Eq.subst
 #check Eq.ndrec
 
-example {x y: α}(e: x = y): y = x :=
-  Eq.ndrec (motive := λv => v = x) (rfl: x = x) e
-
 -- Eq.symm
+example {x y: α}(e: x = y): y = x :=
+  e.subst (motive := λt => t = x) (rfl: x = x)
+
 example {x y: α}(e: x = y): y = x :=
   e ▸ (rfl: x = x)
 
 -- Eq.trans
 example {x y z: α}(xy: x = y)(yz: y = z): x = z :=
-  yz ▸ (xy: x = y)
+  yz.subst (motive := λt => x = t) (xy: x = y)
 
 -- Eq.congrArg
 example {x y: α}{f: α → β}(e: x = y): f x = f y :=
-  e ▸ (rfl: f x = f x)
+  e.subst (motive := λt => f x = f t) (rfl: f x = f x)
 
 -- Неравенство, на примере Bool
 
@@ -235,7 +215,7 @@ def bool_d {P: Sort u}(b: Bool): Bool.noConfusionType P b b :=
   b.casesOn (λp => p) (λp => p)
 
 example (h: false = true): False :=
-  Eq.subst h (bool_d false)
+  Eq.subst (motive := λt => Bool.noConfusionType _ false t) h (bool_d false)
 
 #check Bool.noConfusion
 
