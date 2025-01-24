@@ -1,5 +1,7 @@
 set_option pp.proofs true
 
+macro "reader" : tactic => `(tactic| exact @sorryAx _ false)
+
 -- Or.elim
 example {c: Prop} (h: Or a b) (left: a → c) (right: b → c): c :=
   Or.rec left right h
@@ -136,9 +138,9 @@ example (n: Nat): 0 + n = n :=
 
 -- Упражнения
 
-theorem succ_add (n k: Nat): n.succ + k = (n + k).succ := sorry
+theorem succ_add (n k: Nat): n.succ + k = (n + k).succ := by reader
 
-theorem add_comm (n k: Nat): n + k = k + n := sorry
+theorem add_comm (n k: Nat): n + k = k + n := by reader
 
 -- Ассоциативность сложения
 
@@ -174,21 +176,21 @@ theorem pred_succ (n: Nat): n.succ.pred = n := rfl
 
 -- Упражнения
 
-theorem succ_cancel {n k: Nat}(e: n.succ = k.succ): n = k := sorry
+theorem succ_cancel {n k: Nat}(e: n.succ = k.succ): n = k := by reader
 
-theorem add_right_cancel {m n k: Nat}: (m+k = n+k) → m = n := sorry
+theorem add_right_cancel {m n k: Nat}: (m+k = n+k) → m = n := by reader
 
-theorem add_left_cancel {m n k: Nat}: (k+m = k+n) → m = n := sorry
+theorem add_left_cancel {m n k: Nat}: (k+m = k+n) → m = n := by reader
 
-theorem add_eq_zero_left {n k: Nat}: (n + k = 0) → n = 0 := sorry
+theorem add_eq_zero_left {n k: Nat}: (n + k = 0) → n = 0 := by reader
 
-theorem add_eq_zero_right {n k: Nat}: (n + k = 0) → k = 0 := sorry
+theorem add_eq_zero_right {n k: Nat}: (n + k = 0) → k = 0 := by reader
 
 -- Nat.noConfusion
 theorem succ_ne_zero (n:Nat): n.succ ≠ 0 := Nat.noConfusion
 
 -- Упражнение
-theorem succ_ne_self (n:Nat): n.succ ≠ n := sorry
+theorem succ_ne_self (n:Nat): n.succ ≠ n := by reader
 
 -- Суммируя, тактики:
 -- refine, exact, show, intro, rw, simp, ac_rfl
@@ -232,24 +234,24 @@ example {m n k: Nat}(mn: m ≤ n)(nk: n ≤ k): m ≤ k :=
 
 -- Упражнения
 
-theorem le_of_succ_le {n k: Nat}(le: n.succ ≤ k): n ≤ k := sorry
+theorem le_of_succ_le {n k: Nat}(le: n.succ ≤ k): n ≤ k := by reader
 
-theorem succ_le_succ {n m: Nat}(le: n ≤ m): n.succ ≤ m.succ := sorry
+theorem succ_le_succ {n m: Nat}(le: n ≤ m): n.succ ≤ m.succ := by reader
 
-theorem zero_le (n: Nat): 0 ≤ n := sorry
+theorem zero_le (n: Nat): 0 ≤ n := by reader
 
-theorem zero_lt_succ (n: Nat): 0 < n.succ := sorry
+theorem zero_lt_succ (n: Nat): 0 < n.succ := by reader
 
 
-theorem pred_le (n: Nat): n.pred ≤ n := sorry
+theorem pred_le (n: Nat): n.pred ≤ n := by reader
 
-theorem pred_lt {n: Nat}(pn: n ≠ 0): n.pred < n := sorry
+theorem pred_lt {n: Nat}(pn: n ≠ 0): n.pred < n := by reader
 
-theorem pred_le_of_le {n k: Nat}(le: n ≤ k): n.pred ≤ k := sorry
+theorem pred_le_of_le {n k: Nat}(le: n ≤ k): n.pred ≤ k := by reader
 
-theorem pred_le_pred {n k: Nat}(le: n ≤ k): n.pred ≤ k.pred := sorry
+theorem pred_le_pred {n k: Nat}(le: n ≤ k): n.pred ≤ k.pred := by reader
 
-theorem le_of_succ_le_succ {n m: Nat}: n.succ ≤ m.succ → n ≤ m := sorry
+theorem le_of_succ_le_succ {n m: Nat}: n.succ ≤ m.succ → n ≤ m := by reader
 
 -- Не самое очевидное доказательство
 theorem not_one_le_zero: ¬1 ≤ 0 := by
@@ -267,28 +269,28 @@ example: ∀k: Nat, 1 ≤ k → k = 0 → False :=
 
 -- Упражнения
 
-theorem not_succ_le_zero (n: Nat): ¬n.succ ≤ 0 := sorry
+theorem not_succ_le_zero (n: Nat): ¬n.succ ≤ 0 := by reader
 
-theorem not_succ_le_self (n: Nat): ¬n.succ ≤ n := sorry
+theorem not_succ_le_self (n: Nat): ¬n.succ ≤ n := by reader
 
-theorem eq_zero_of_le_zero {n: Nat} (h: n ≤ 0): n = 0 := sorry
+theorem eq_zero_of_le_zero {n: Nat} (h: n ≤ 0): n = 0 := by reader
 
-theorem lt_irrefl (n: Nat): ¬n < n := sorry
+theorem lt_irrefl (n: Nat): ¬n < n := by reader
 
 theorem pos_iff_ne_zero {n: Nat}: 0 < n ↔ n ≠ 0 :=
-  ⟨sorry, sorry⟩
+  ⟨by reader, by reader⟩
 
 -- Упражнения, связывающие «меньше или равно» со сложением
 
-theorem le_add (n k: Nat): n ≤ n + k := sorry
+theorem le_add (n k: Nat): n ≤ n + k := by reader
 
-theorem le_add_of_le {m n: Nat}(k: Nat)(le: m ≤ n): m ≤ n + k := sorry
+theorem le_add_of_le {m n: Nat}(k: Nat)(le: m ≤ n): m ≤ n + k := by reader
 
-theorem add_le_add_left {n k: Nat}(l: n ≤ k): ∀p, n + p ≤ k + p := sorry
+theorem add_le_add_left {n k: Nat}(l: n ≤ k): ∀p, n + p ≤ k + p := by reader
 
-theorem le_of_add_le_add_left {m n k: Nat}: (h: m + n ≤ m + k) → n ≤ k := sorry
+theorem le_of_add_le_add_left {m n k: Nat}: (h: m + n ≤ m + k) → n ≤ k := by reader
 
-theorem not_add_le_self (n: Nat){k: Nat}(pk: 0 < k): ¬(n + k ≤ n) := sorry
+theorem not_add_le_self (n: Nat){k: Nat}(pk: 0 < k): ¬(n + k ≤ n) := by reader
 
 -- Пара полезных лемм
 
@@ -313,19 +315,19 @@ theorem le_of_exists {n k: Nat}: (ex: ∃d, n + d = k) → n ≤ k := by
 
 -- Ещё упражнения
 
-theorem le_antisymm {n k: Nat}(nk: n ≤ k): (kn: k ≤ n) → n = k := sorry
+theorem le_antisymm {n k: Nat}(nk: n ≤ k): (kn: k ≤ n) → n = k := by reader
 
 theorem eq_or_lt_of_le {n m: Nat}(nm: n ≤ m): (n = m) ∨ (n < m) := by
   suffices h: ∀m, n ≤ m → (n = m) ∨ (n < m) from h m nm
-  sorry
+  reader
 
 theorem lt_or_ge (n k: Nat): n < k ∨ k ≤ n :=
   suffices h: ∀n, n < k ∨ k ≤ n from h n
-  sorry
+  by reader
 
-theorem not_le_of_gt {n k: Nat}(h: n > k): ¬n ≤ k := sorry
+theorem not_le_of_gt {n k: Nat}(h: n > k): ¬n ≤ k := by reader
 
-theorem not_lt_of_ge {n k: Nat}(h: k ≥ n): ¬(k < n) := sorry
+theorem not_lt_of_ge {n k: Nat}(h: k ≥ n): ¬(k < n) := by reader
 
 -- `≤` это на самом деле `LE.le`
 #check LE.le
@@ -426,15 +428,15 @@ theorem sub_succ (n k: Nat): n - k.succ = (n - k).pred := rfl
 
 -- Упражнения
 
-theorem zero_sub (n: Nat): 0 - n = 0 := sorry
+theorem zero_sub (n: Nat): 0 - n = 0 := by reader
 
-theorem succ_sub_succ (n m: Nat): n.succ - m.succ = n - m := sorry
+theorem succ_sub_succ (n m: Nat): n.succ - m.succ = n - m := by reader
 
-theorem sub_self (n: Nat): n - n = 0 := sorry
+theorem sub_self (n: Nat): n - n = 0 := by reader
 
-theorem sub_eq_zero_of_le {n k: Nat}(h: n ≤ k): n - k = 0 := sorry
+theorem sub_eq_zero_of_le {n k: Nat}(h: n ≤ k): n - k = 0 := by reader
 
-theorem sub_le (n m: Nat): n - m ≤ n := sorry
+theorem sub_le (n m: Nat): n - m ≤ n := by reader
 
 -- Пример одновременного сопоставления двух значений
 theorem sub_lt {n m: Nat}(pn: 0 < n)(pm: 0 < m): n - m < n :=
@@ -448,29 +450,29 @@ theorem sub_lt {n m: Nat}(pn: 0 < n)(pm: 0 < m): n - m < n :=
 
 -- Ещё упражнения
 
-theorem sub_le_sub_left {n m: Nat}(h: n ≤ m)(k: Nat): k - m ≤ k - n := sorry
+theorem sub_le_sub_left {n m: Nat}(h: n ≤ m)(k: Nat): k - m ≤ k - n := by reader
 
 theorem sub_le_sub_right {n m: Nat} (le: n ≤ m) (k: Nat): n - k ≤ m - k :=
   suffices h: ∀k, n ≤ m → n - k ≤ m - k from h k le
-  sorry
+  by reader
 
-theorem sub_sub (n m k: Nat): n - m - k = n - (m + k) := sorry
+theorem sub_sub (n m k: Nat): n - m - k = n - (m + k) := by reader
 
-theorem add_sub_cancel (n m: Nat): n + m - m = n := sorry
+theorem add_sub_cancel (n m: Nat): n + m - m = n := by reader
 
 theorem succ_sub {n k: Nat}(h: k ≤ n): n.succ - k = (n - k).succ := by
   let ⟨d, hd⟩ := exists_of_le h
   rw [←hd]
-  sorry
+  reader
 
-theorem sub_add_comm {n m k: Nat}(h: k ≤ n): n + m - k = n - k + m := sorry
+theorem sub_add_comm {n m k: Nat}(h: k ≤ n): n + m - k = n - k + m := by reader
 
-theorem sub_add_cancel {n k: Nat} (h: k ≤ n): n - k + k = n := sorry
+theorem sub_add_cancel {n k: Nat} (h: k ≤ n): n - k + k = n := by reader
 
 theorem add_sub_assoc {m k: Nat} (h: k ≤ m) (n: Nat): n + m - k = n + (m - k) := by
   let ⟨d, hd⟩ := exists_of_le h
   rw [←hd]
-  sorry
+  reader
 
 
 -- Умножение
@@ -487,48 +489,48 @@ theorem mul_succ (n k: Nat): n * k.succ = n * k + n  := rfl
 
 -- Упражнения
 
-theorem mul_one (n: Nat):    n * 1 = n := sorry
+theorem mul_one (n: Nat):    n * 1 = n := by reader
 
-theorem zero_mul (n: Nat): 0 * n = 0 := sorry
+theorem zero_mul (n: Nat): 0 * n = 0 := by reader
 
-theorem succ_mul (n k: Nat): n.succ * k = n * k + k := sorry
+theorem succ_mul (n k: Nat): n.succ * k = n * k + k := by reader
 
-theorem one_mul (n:Nat): 1*n = n := sorry
+theorem one_mul (n:Nat): 1*n = n := by reader
 
 -- Упражнения (коммутативность, дистрибутивность и ассоциативность)
 
-theorem mul_comm (n k: Nat): n * k = k * n := sorry
+theorem mul_comm (n k: Nat): n * k = k * n := by reader
 
-theorem mul_left_distr (n k p: Nat): n * (k + p) = n * k + n * p := sorry
+theorem mul_left_distr (n k p: Nat): n * (k + p) = n * k + n * p := by reader
 
-theorem mul_right_distr (n k p: Nat): (n + k) * p = n * p + k * p := sorry
+theorem mul_right_distr (n k p: Nat): (n + k) * p = n * p + k * p := by reader
 
-theorem mul_assoc (m n k: Nat): (m * n) * k = m * (n * k) := sorry
+theorem mul_assoc (m n k: Nat): (m * n) * k = m * (n * k) := by reader
 
 example {a b c d e: Nat}: (((a * b) * c) * d) * e = (c * ((b * e) * a)) * d :=
 by ac_rfl
 
 -- Ещё упражнения
-theorem mul_eq_zero {n k: Nat}: (n * k = 0) → n = 0 ∨ k = 0 := sorry
+theorem mul_eq_zero {n k: Nat}: (n * k = 0) → n = 0 ∨ k = 0 := by reader
 
 theorem mul_left_cancel {m n k: Nat}(pm: m ≠ 0): (m * n = m * k) → n = k := by
   suffices h: ∀n, (m * n = m * k) → n = k from h n
   refine k.recOn ?_ ?_
-  · sorry
-  · sorry
+  · reader
+  · reader
 
-theorem pos_of_mul_pos_left {n k: Nat}(h: 0 < n * k): 0 < k := sorry
+theorem pos_of_mul_pos_left {n k: Nat}(h: 0 < n * k): 0 < k := by reader
 
-theorem mul_le_mul_left {n k: Nat}(m: Nat)(h: n ≤ k): m * n ≤ m * k := sorry
+theorem mul_le_mul_left {n k: Nat}(m: Nat)(h: n ≤ k): m * n ≤ m * k := by reader
 
 theorem le_of_mul_le_mul_left {m n k: Nat}(pk: 0 < m): (m * n ≤ m * k) → n ≤ k :=
   match lt_or_ge k n with
-  | Or.inr h => sorry
-  | Or.inl (nm: k < n) => sorry
+  | Or.inr h => by reader
+  | Or.inl (nm: k < n) => by reader
 
 theorem mul_sub_left_distrib (m n k: Nat): m * (n - k) = m * n - m * k :=
-  if h: n ≥ k then sorry
-  else sorry
+  if h: n ≥ k then by reader
+  else by reader
 
 
 -- Сильная индукция
@@ -721,17 +723,17 @@ theorem mod_zero (n: Nat): n % 0 = n := by
 
 -- Упражнения
 
-theorem mod_eq_of_lt {n k: Nat}(h: n < k): n % k = n := sorry
+theorem mod_eq_of_lt {n k: Nat}(h: n < k): n % k = n := by reader
 
-theorem mod_eq_sub_mod {n k: Nat}(h: n ≥ k): n % k = (n - k) % k := sorry
+theorem mod_eq_sub_mod {n k: Nat}(h: n ≥ k): n % k = (n - k) % k := by reader
 
-theorem mod_one (n: Nat): n % 1 = 0 := sorry
+theorem mod_one (n: Nat): n % 1 = 0 := by reader
 
-theorem zero_mod (n: Nat): 0 % n = 0 := sorry
+theorem zero_mod (n: Nat): 0 % n = 0 := by reader
 
-theorem zero_div (n: Nat): 0 / n = 0 := sorry
+theorem zero_div (n: Nat): 0 / n = 0 := by reader
 
-theorem div_one (n: Nat): n / 1 = n := sorry
+theorem div_one (n: Nat): n / 1 = n := by reader
 
 -- Индуктивный принцип, извлечённый из определений деления и модуля
 def divmod_ind.{u}
@@ -765,29 +767,29 @@ theorem mod_add_div (n k: Nat): n % k + k * (n / k) = n := by
 
 -- Упражнения (связь со сложением и умножением)
 
-theorem add_div_right (n: Nat){k: Nat}(h: 0 < k): (n + k) / k = (n / k).succ := sorry
+theorem add_div_right (n: Nat){k: Nat}(h: 0 < k): (n + k) / k = (n / k).succ := by reader
 
-theorem add_mod_right (n k: Nat): (n + k) % k = n % k := sorry
+theorem add_mod_right (n k: Nat): (n + k) % k = n % k := by reader
 
-theorem add_mod_left (n k: Nat): (k + n) % k = n % k := sorry
+theorem add_mod_left (n k: Nat): (k + n) % k = n % k := by reader
 
-theorem add_mul_div_left (m n: Nat){k: Nat}(h: 0 < k): (m + k * n) / k = m / k + n := sorry
+theorem add_mul_div_left (m n: Nat){k: Nat}(h: 0 < k): (m + k * n) / k = m / k + n := by reader
 
-theorem mul_div_cancel (m: Nat){n: Nat}(h: 0 < n): m * n / n = m := sorry
+theorem mul_div_cancel (m: Nat){n: Nat}(h: 0 < n): m * n / n = m := by reader
 
-theorem add_mul_mod_self_left (m n k: Nat): (m + k * n) % k = m % k := sorry
+theorem add_mul_mod_self_left (m n k: Nat): (m + k * n) % k = m % k := by reader
 
-theorem add_mul_mod_self_right (m n k: Nat): (m + n * k) % k = m % k := sorry
+theorem add_mul_mod_self_right (m n k: Nat): (m + n * k) % k = m % k := by reader
 
-theorem mul_mod_left (n k: Nat): n * k % k = 0 := sorry
+theorem mul_mod_left (n k: Nat): n * k % k = 0 := by reader
 
-theorem mul_mod_right (n k: Nat): k * n % k = 0 := sorry
+theorem mul_mod_right (n k: Nat): k * n % k = 0 := by reader
 
 -- Упражнения (свойста модуля)
 
-theorem mod_lt (n: Nat){k: Nat}: 0 < k → n % k < k := sorry
+theorem mod_lt (n: Nat){k: Nat}: 0 < k → n % k < k := by reader
 
-theorem mod_mod (n k: Nat): n % k % k = n % k := sorry
+theorem mod_mod (n k: Nat): n % k % k = n % k := by reader
 
 -- Неочевидная теорема
 theorem mul_mod_mul_left (m n k: Nat): m * n % (m * k) = m * (n % k) := by
@@ -816,9 +818,9 @@ theorem mul_mod_mul_left (m n k: Nat): m * n % (m * k) = m * (n % k) := by
 
 -- Упражнения
 
-theorem add_mod (m n k: Nat): (m + n) % k = (m % k + n % k) % k := sorry
+theorem add_mod (m n k: Nat): (m + n) % k = (m % k + n % k) % k := by reader
 
-theorem mul_mod (m n k: Nat): (m * n) % k = ((m % k) * (n % k)) % k := sorry
+theorem mul_mod (m n k: Nat): (m * n) % k = ((m % k) * (n % k)) % k := by reader
 
 
 -- Тактика `omega`
