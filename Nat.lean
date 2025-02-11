@@ -349,7 +349,7 @@ theorem not_lt_of_ge {n k: Nat}(h: k ≥ n): ¬(k < n) := by reader
 #check Decidable
 
 -- `≤` разрешимо
-#synth ∀n k: Nat, Decidable (n ≤ k)    -- Nat.decLe
+#synth Decidable (2 ≤ 3)    -- Nat.decLe
 
 def decLe: (n m: Nat) → Decidable (n ≤ m)
 | Nat.zero, Nat.zero     => Decidable.isTrue (le_refl 0)
@@ -569,8 +569,8 @@ def indSuccRel: Ind Nat.succRel :=
 #check Acc.recOn
 
 -- Любое индуктивное отношение является фундированным
-def wf_of_ind {r: α → α → Prop}(ind: Ind r): ∀x, Acc r x :=
-  ind Acc.intro
+def wf_of_ind {α: Type}{r: α → α → Prop}(ind: Ind.{0} r): ∀x, Acc r x :=
+  by reader
 
 -- Любое фундированное отношение является индуктивным
 noncomputable def ind_of_wf {r: α → α → Prop}(wf: ∀x, Acc r x): Ind r :=
@@ -822,9 +822,6 @@ theorem add_mod (m n k: Nat): (m + n) % k = (m % k + n % k) % k := by reader
 
 theorem mul_mod (m n k: Nat): (m * n) % k = ((m % k) * (n % k)) % k := by reader
 
-
--- Тактика `omega`
-example: 2*a + b = a + b + a := by omega
 
 -- Тактики, помогающие найти леммы
 #check Lean.Parser.Tactic.exact?
