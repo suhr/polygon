@@ -1,0 +1,5 @@
+name = "polygon"
+defaultTargets = ["Polygon"]
+
+[[lean_lib]]
+name = "Polygon"
