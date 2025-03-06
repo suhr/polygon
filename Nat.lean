@@ -12,7 +12,7 @@ example {C: Sort u} (h: False): C :=
 
 -- Exists.elim
 example {α: Sort u} {p: α → Prop} {b: Prop}
-    (h₁: Exists (λx => p x)) (h₂: ∀a: α, p a → b): b :=
+    (h₁: Exists (λx ↦ p x)) (h₂: ∀a: α, p a → b): b :=
   Exists.rec h₂ h₁
 
 -- Эквивалентность
@@ -74,11 +74,11 @@ example (n: Nat): Nat :=
 -- Определение с помощью рекурсора
 noncomputable
 example (n k: Nat): Nat :=
-  k.recOn n (λ_ s => Nat.succ s)
+  k.recOn n (λ_ s ↦ Nat.succ s)
 
 -- Различные способы вычислять
 #eval 2 + 3
-#reduce λn => n + 3
+#reduce λn ↦ n + 3
 
 -- Доказательство рефлексивностью
 example: 1 + 1 = 2 := rfl
@@ -91,7 +91,7 @@ theorem add_succ  (n k: Nat): n + k.succ = (n + k).succ  := rfl
 theorem zero_add (n: Nat): 0 + n = n :=
   n.recOn
     (show 0 + 0 = 0 from rfl)
-    (λn (h: 0 + n = n) =>
+    (λn (h: 0 + n = n) ↦
       show 0 + n.succ = n.succ from
       congrArg Nat.succ h)
 
@@ -106,7 +106,7 @@ theorem zero_add_match: (n: Nat) → 0 + n = n
 example (n: Nat): 0 + n = n :=
   n.recOn
     rfl
-    (λn (h: 0 + n = n) =>
+    (λn (h: 0 + n = n) ↦
       calc
         0 + n.succ = (0 + n).succ := add_succ 0 n
         _          = n.succ       := h.symm ▸ (rfl : n.succ = n.succ))
@@ -122,19 +122,19 @@ example (n: Nat): 0 + n = n := by
 
 -- Сжатое доказательство
 example (n: Nat): 0 + n = n := by
-  refine n.recOn rfl (λn h => ?_)
+  refine n.recOn rfl (λn h ↦ ?_)
   rw [add_succ]
   rw [h]
 
 -- Преобразование цели с помощью show
 example (n: Nat): 0 + n = n := by
-  refine n.recOn rfl (λn h => ?_)
+  refine n.recOn rfl (λn h ↦ ?_)
   show (0 + n).succ = n.succ
   rw [h]
 
 -- Тактическое подвыражение
 example (n: Nat): 0 + n = n :=
-  n.recOn rfl (λn h => by rw [add_succ, h])
+  n.recOn rfl (λn h ↦ by rw [add_succ, h])
 
 -- Упражнения
 
@@ -145,7 +145,7 @@ theorem add_comm (n k: Nat): n + k = k + n := by reader
 -- Ассоциативность сложения
 
 theorem add_assoc (m n k: Nat): (m + n) + k = m + (n + k) := by
-  refine k.recOn rfl (λk h => ?_)
+  refine k.recOn rfl (λk h ↦ ?_)
   calc
     (m + n) + k.succ = ((m + n) + k).succ := by rw [add_succ]
     _                = (m + (n + k)).succ := by rw [h]
@@ -154,14 +154,14 @@ theorem add_assoc (m n k: Nat): (m + n) + k = m + (n + k) := by
 
 -- Сжатое доказательство
 example (m n k: Nat): (m + n) + k = m + (n + k) := by
-  refine k.recOn rfl (λk h => ?s)
+  refine k.recOn rfl (λk h ↦ ?s)
   calc
     (m + n) + k.succ = ((m + n) + k).succ := rfl
     _                = (m + (n + k)).succ := by rw [h]
 
 -- Тактика simp
 example {m n k: Nat}: (m + n) + k = m + (n + k) :=
-  k.recOn rfl (λk h => by simp only [add_succ, h])
+  k.recOn rfl (λk h ↦ by simp only [add_succ, h])
 
 
 -- Доказательство по ассоциативности и рефлексивности
@@ -212,7 +212,7 @@ theorem succ_ne_self (n:Nat): n.succ ≠ n := by reader
 --   ∀{b: α} (t: a = b), motive b t
 #print Eq.rec
 
--- «Меньше» представляет собой `λn k => Nat.le n.succ k`
+-- «Меньше» представляет собой `λn k ↦ Nat.le n.succ k`
 #print Nat.lt
 
 theorem le_refl (n: Nat): n ≤ n := Nat.le.refl
@@ -223,7 +223,7 @@ theorem le_succ_of_le {n k: Nat}: n ≤ k → n ≤ k.succ := Nat.le.step
 theorem le_trans {m n k: Nat}(mn: m ≤ n)(nk: n ≤ k): m ≤ k :=
   nk.recOn
     (show m ≤ n from mn)
-    (λ{k} (_: n ≤ k) (h: m ≤ k) =>
+    (λ{k} (_: n ≤ k) (h: m ≤ k) ↦
       show m ≤ k.succ from le_succ_of_le h)
 
 -- Транзитивность позволяет использовать calc
@@ -256,16 +256,16 @@ theorem le_of_succ_le_succ {n m: Nat}: n.succ ≤ m.succ → n ≤ m := by reade
 -- Не самое очевидное доказательство
 theorem not_one_le_zero: ¬1 ≤ 0 := by
   suffices any_zero: ∀k, 1 ≤ k → k = 0 → False from
-    λh => any_zero 0 h rfl
-  exact λk ok => ok.recOn
-    (λ(h: 1 = 0) => succ_ne_zero 0 h)
-    (λ{k} _ _ (ksz: k.succ = 0) => succ_ne_zero k ksz)
+    λh ↦ any_zero 0 h rfl
+  exact λk ok ↦ ok.recOn
+    (λ(h: 1 = 0) ↦ succ_ne_zero 0 h)
+    (λ{k} _ _ (ksz: k.succ = 0) ↦ succ_ne_zero k ksz)
 
 -- Можно без тактик, но тогда нужно явно указывать аргументы
 example: ∀k: Nat, 1 ≤ k → k = 0 → False :=
-  λk ok => @Nat.le.recOn _ (λk _ => k = 0 → False) k ok
-    (λ(h: 1 = 0) => succ_ne_zero 0 h)
-    (λ{k} _ _ (ksz: k.succ = 0) => succ_ne_zero k ksz)
+  λk ok ↦ @Nat.le.recOn _ (λk _ ↦ k = 0 → False) k ok
+    (λ(h: 1 = 0) ↦ succ_ne_zero 0 h)
+    (λ{k} _ _ (ksz: k.succ = 0) ↦ succ_ne_zero k ksz)
 
 -- Упражнения
 
@@ -298,7 +298,7 @@ theorem not_add_le_self (n: Nat){k: Nat}(pk: 0 < k): ¬(n + k ≤ n) := by reade
 theorem exists_of_le {n k: Nat}(le: n ≤ k): ∃p, n + p = k :=
   le.recOn
     ⟨0, rfl⟩
-    (λ_ ⟨p,h⟩ => ⟨p.succ, congrArg Nat.succ h⟩)
+    (λ_ ⟨p,h⟩ ↦ ⟨p.succ, congrArg Nat.succ h⟩)
 
 theorem le_of_exists {n k: Nat}: (ex: ∃d, n + d = k) → n ≤ k := by
   refine k.recOn ?_ ?_
@@ -367,11 +367,11 @@ def decLe: (n m: Nat) → Decidable (n ≤ m)
 
 #check decide_eq_false
 example [inst : Decidable p]: ¬p → (decide p) = false :=
-  inst.recOn (λ_ _ => rfl) (λhp hnp => absurd hp hnp)
+  inst.recOn (λ_ _ ↦ rfl) (λhp hnp ↦ absurd hp hnp)
 
 #check decide_eq_true
 example [inst : Decidable p]: p → (decide p) = true :=
-  inst.recOn (λhnp hp => absurd hp hnp) (λ_ _ => rfl)
+  inst.recOn (λhnp hp ↦ absurd hp hnp) (λ_ _ ↦ rfl)
 
 -- Доказательство p из (decide p) = true
 #check of_decide_eq_true
@@ -550,10 +550,10 @@ def Ind.{u} (r: α → α → Prop) :=
 
 -- Nat.succRel индуктивно
 def indSuccRel: Ind Nat.succRel :=
-  λ{M} (ind: ∀x, (∀y: Nat, y.succRel x → M y) → M x) => by
-    refine Nat.rec ?z (λn (h: M n) => ?_)
+  λ{M} (ind: ∀x, (∀y: Nat, y.succRel x → M y) → M x) ↦ by
+    refine Nat.rec ?z (λn (h: M n) ↦ ?_)
     · show M 0
-      exact ind 0 (λn s => absurd s (succ_ne_zero n))
+      exact ind 0 (λn s ↦ absurd s (succ_ne_zero n))
     · suffices hk: ∀k, k.succRel n.succ → M k from ind n.succ hk
       intro k s
       have: k = n := congrArg Nat.pred s
@@ -574,8 +574,8 @@ def wf_of_ind {α: Type}{r: α → α → Prop}(ind: Ind.{0} r): ∀x, Acc r x :
 
 -- Любое фундированное отношение является индуктивным
 noncomputable def ind_of_wf {r: α → α → Prop}(wf: ∀x, Acc r x): Ind r :=
-  λ{M} (h: ∀x, (∀y, r y x → M y) → M x) x =>
-    show M x from (wf x).recOn (λx _ (wh: ∀y, r y x → M y) => h x wh)
+  λ{M} (h: ∀x, (∀y, r y x → M y) → M x) x ↦
+    show M x from (wf x).recOn (λx _ (wh: ∀y, r y x → M y) ↦ h x wh)
 
 -- Любое число достижимо по Nat.succRel
 theorem acc_succ_rel: ∀n, Acc Nat.succRel n :=
@@ -586,7 +586,7 @@ theorem acc_succ_rel: ∀n, Acc Nat.succRel n :=
 
 #check Acc.inv
 example {x y: α}(ax: Acc r x): r y x → Acc r y :=
-  ax.recOn (λx (f: ∀y, r y x → Acc r y) _ => f y)
+  ax.recOn (λx (f: ∀y, r y x → Acc r y) _ ↦ f y)
 
 -- Отношение «меньше или равно» является фундированным
 def lt_wf (n: Nat): Acc Nat.lt n := by
@@ -598,8 +598,8 @@ def lt_wf (n: Nat): Acc Nat.lt n := by
     intro m h
     have elt: m = n ∨ m < n := eq_or_lt_of_le (le_of_succ_le_succ h)
     exact elt.elim
-      (λ(e: m = n) => e.symm ▸ an)
-      (λ(l: m < n) => Acc.inv an l)
+      (λ(e: m = n) ↦ e.symm ▸ an)
+      (λ(l: m < n) ↦ Acc.inv an l)
 
 -- Определение функции с помощью сильной индукции
 
@@ -625,17 +625,17 @@ def modTwoFix: Nat → Nat :=
 def acc_invImage {x: α}(f: α → β)(acc: Acc r (f x)): Acc (InvImage r f) x := by
   suffices h: ∀y, Acc r y → ∀w, f w = y → Acc (InvImage r f) w
     from h (f x) acc x rfl
-  refine λy (a: Acc r y) => a.recOn ?_
+  refine λy (a: Acc r y) ↦ a.recOn ?_
   intro z _ (h: ∀y, r y z → ∀t, f t = y → Acc (InvImage r f) t)
   show ∀w, f w = z → Acc (InvImage r f) w
   intro w e
   suffices h: ∀t, r (f t) (f w) → Acc (InvImage r f) t
     from Acc.intro _ h
-  exact λt ht => h _ (e ▸ ht) t rfl
+  exact λt ht ↦ h _ (e ▸ ht) t rfl
 
 -- Прообраз фундированного отношения это фундированное отношение
 def wf_invImage (wf: ∀y: β, Acc r y)(f: α → β): ∀x: α, Acc (InvImage r f) x :=
-  λx => acc_invImage f (wf (f x))
+  λx ↦ acc_invImage f (wf (f x))
 
 -- Мера задаёт фундированное отношение
 def wf_measure: (f: α → Nat) → ∀x: α, Acc (InvImage Nat.lt f) x :=
@@ -658,7 +658,7 @@ decreasing_by
 -- Принцип бесконечного спуска
 def inf_desc {r: α → α → Prop}(arx: Acc r x){p: α → Prop}
     (h: ∀x, p x → ∃y, r y x ∧ p y): p x → False :=
-  arx.recOn (λx _ (ih: ∀y, r y x → p y → False) px =>
+  arx.recOn (λx _ (ih: ∀y, r y x → p y → False) px ↦
     let ⟨y, ⟨ryx, py⟩⟩ := h x px
     ih y ryx py)
 
@@ -666,7 +666,7 @@ def inf_desc {r: α → α → Prop}(arx: Acc r x){p: α → Prop}
 -- Деление
 
 def div_rec_lemma {n k: Nat}: (0 < k ∧ k ≤ n) → n - k < n :=
-  λ⟨(pk: 0 < k), (kn: k ≤ n)⟩ => sub_lt (le_trans pk kn) pk
+  λ⟨(pk: 0 < k), (kn: k ≤ n)⟩ ↦ sub_lt (le_trans pk kn) pk
 
 -- Определение деления
 
@@ -750,7 +750,7 @@ decreasing_by exact div_rec_lemma h
 
 -- Использование этого принципа
 theorem mod_add_div (n k: Nat): n % k + k * (n / k) = n := by
-  refine divmod_ind (motive := λn k => n % k + k * (n / k) = n) ?_ ?_ n k
+  refine divmod_ind (motive := λn k ↦ n % k + k * (n / k) = n) ?_ ?_ n k
   · intro n k (h: ¬(0 < k ∧ k ≤ n))
     calc
       n % k + k * (n / k) = n + k * 0 := by rw [div_eq_if_neg h, mod_eq_if_neg h]
@@ -797,10 +797,10 @@ theorem mul_mod_mul_left (m n k: Nat): m * n % (m * k) = m * (n % k) := by
   | Nat.zero => simp only [zero_mul, mod_zero]
   | Nat.succ m =>
     refine divmod_ind
-      (motive := λn k => m.succ * n % (m.succ * k) = m.succ * (n % k)) ?_ ?_ n k
+      (motive := λn k ↦ m.succ * n % (m.succ * k) = m.succ * (n % k)) ?_ ?_ n k
     · intro n k (h: ¬(0 < k ∧ k ≤ n))
       have: ¬(0 < m.succ * k ∧ m.succ * k ≤ m.succ * n) :=
-        h ∘ (λ⟨msk, k_le_msn⟩ =>
+        h ∘ (λ⟨msk, k_le_msn⟩ ↦
           ⟨pos_of_mul_pos_left msk,
           le_of_mul_le_mul_left (zero_lt_succ m) k_le_msn⟩)
       calc

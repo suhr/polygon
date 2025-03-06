@@ -6,7 +6,7 @@ set_option pp.proofs true
 set_option linter.unusedVariables false
 
 example: ∀α β: Type, (x:α) → (y:β) → α :=
-  λ(α β: Type)(x:α)(y:β) => x
+  λ(α β: Type)(x:α)(y:β) ↦ x
 
 example (α β: Type)(x:α)(y:β): α := x
 
@@ -26,7 +26,7 @@ def f2 {α β: Type}(x:α)(_:β): α := x
 #check @f2 Nat Nat 3 5
 #check f2 (β := Nat) 3 5
 
-#check λP => ¬P
+#check λP ↦ ¬P
 
 -- Вселенные
 
@@ -74,18 +74,18 @@ example (x:α)(_:β): α := x
 -- Примеры доказательств
 
 example {P Q: Prop}(pq: P ∨ Q)(np: ¬P): Q :=
-  pq.elim (λp => False.elim (np p)) (λq => q)
+  pq.elim (λp ↦ False.elim (np p)) (λq ↦ q)
 
 example {P Q R: Prop}(pqr: P ∧ (Q ∨ R)): (P ∧ Q) ∨ (P ∧ R) :=
   let ⟨p,qr⟩ := pqr
-  qr.elim (λq => Or.inl ⟨p,q⟩) (λr => Or.inr ⟨p,r⟩)
+  qr.elim (λq ↦ Or.inl ⟨p,q⟩) (λr ↦ Or.inr ⟨p,r⟩)
 
 example {P Q: α → Prop}(apq: ∀x, P x ∧ Q x): (∀x, P x) ∧ (∀x, Q x) :=
-  ⟨λx => (apq x).left, λx => (apq x).right⟩
+  ⟨λx ↦ (apq x).left, λx ↦ (apq x).right⟩
 
 example {P: α → β → Prop}(eap: ∃x, ∀y, P x y): ∀y, ∃x, P x y :=
   let ⟨x,ap⟩ := eap
-  λy => ⟨x, ap y⟩
+  λy ↦ ⟨x, ap y⟩
 
 -- Упражнения без кванторов
 
@@ -153,7 +153,7 @@ open Classical
 
 -- Пример
 example {P: Prop}(nnp: ¬¬P): P :=
-  (em P).elim (λp => p) (λnp => (nnp np).elim)
+  (em P).elim (λp ↦ p) (λnp ↦ (nnp np).elim)
 
 -- Простые упражнения
 
@@ -185,18 +185,18 @@ end classical
 
 -- Eq.symm
 example {x y: α}(e: x = y): y = x :=
-  e.subst (motive := λt => t = x) (rfl: x = x)
+  e.subst (motive := λt ↦ t = x) (rfl: x = x)
 
 example {x y: α}(e: x = y): y = x :=
   e ▸ (rfl: x = x)
 
 -- Eq.trans
 example {x y z: α}(xy: x = y)(yz: y = z): x = z :=
-  yz.subst (motive := λt => x = t) (xy: x = y)
+  yz.subst (motive := λt ↦ x = t) (xy: x = y)
 
 -- Eq.congrArg
 example {x y: α}{f: α → β}(e: x = y): f x = f y :=
-  e.subst (motive := λt => f x = f t) (rfl: f x = f x)
+  e.subst (motive := λt ↦ f x = f t) (rfl: f x = f x)
 
 -- Неравенство, на примере Bool
 
@@ -212,10 +212,10 @@ example {x y: α}{f: α → β}(e: x = y): f x = f y :=
 #reduce Bool.noConfusionType False true true    -- False → False
 
 def bool_d {P: Sort u}(b: Bool): Bool.noConfusionType P b b :=
-  b.casesOn (λp => p) (λp => p)
+  b.casesOn (λp ↦ p) (λp ↦ p)
 
 example (h: false = true): False :=
-  Eq.subst (motive := λt => Bool.noConfusionType _ false t) h (bool_d false)
+  Eq.subst (motive := λt ↦ Bool.noConfusionType _ false t) h (bool_d false)
 
 #check Bool.noConfusion
 
